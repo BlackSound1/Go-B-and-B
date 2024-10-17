@@ -15,7 +15,6 @@ func routes() http.Handler {
 
 	// Use the Recoverer middleware to recover from panics more gracefully
 	mux.Use(middleware.Recoverer)
-	// mux.Use(WriteToConsole)
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 
