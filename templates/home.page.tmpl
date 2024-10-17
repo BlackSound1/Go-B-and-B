@@ -2,12 +2,53 @@
 
 {{ define "content" }}
 
-    <div class="container">
+    <div id="main-carousel" class="carousel slide" data-ride="carousel">
+
+        <ol class="carousel-indicators">
+            <li data-target="#main-carousel" data-slide-to="0" class="active"></li>
+            <li data-target="#main-carousel" data-slide-to="1"></li>
+            <li data-target="#main-carousel" data-slide-to="2"></li>
+        </ol>
+
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="/static/images/woman-laptop.png" class="d-block w-100" alt="Woman with laptop">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>First slide label</h5>
+                    <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="/static/images/tray.png" class="d-block w-100" alt="A tray with coffee">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Second slide label</h5>
+                    <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="/static/images/outside.png" class="d-block w-100" alt="outside">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Third slide label</h5>
+                    <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container ">
         <div class="row">
             <div class="col">
-                <h1>This is the home page</h1>
+                <h1 class="text-center mt-4">Welcome to the Go B & B</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores quasi, nesciunt culpa eum expedita aliquam dolor ipsa tenetur voluptas earum atque eaque amet iure minima sit dolorum consectetur, sequi aut et facilis temporibus provident non! Autem sed maiores iste in exercitationem sapiente beatae fuga id rerum! Harum libero necessitatibus non.</p>
+            </div>
+        </div>
 
-                <p>This is some text</p>
+        <div class="row">
+            <div class="col text-center">
+                <a href="/make-reservation" class="btn btn-success">Make Reservation Now</a>
             </div>
         </div>
     </div>
