@@ -1,0 +1,28 @@
+{{ template "base" .}}
+
+{{ define "content" }}
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>This is the about page</h1>
+
+                <p>This came from the template {{ index .StringMap "test" }}</p>
+
+                <p>
+                    <!-- Check if the remote ip is set by checking if it's not equal to "" -->
+                    {{ if ne (index .StringMap "remote_ip") ""}}
+                    
+                        Your remote IP address is: {{ index .StringMap "remote_ip" }}.
+
+                    {{ else }}
+
+                        Your remote IP address could not be determined. Visit Home page to check.
+
+                    {{ end }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+{{ end }}
