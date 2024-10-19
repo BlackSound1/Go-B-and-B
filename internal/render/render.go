@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/BlackSound1/Go-B-and-B/pkg/config"
-	"github.com/BlackSound1/Go-B-and-B/pkg/models"
+	"github.com/BlackSound1/Go-B-and-B/internal/config"
+	"github.com/BlackSound1/Go-B-and-B/internal/models"
 	"github.com/justinas/nosurf"
 )
 

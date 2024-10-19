@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/BlackSound1/Go-B-and-B/pkg/config"
-	"github.com/BlackSound1/Go-B-and-B/pkg/handlers"
-	"github.com/BlackSound1/Go-B-and-B/pkg/render"
+	"github.com/BlackSound1/Go-B-and-B/internal/config"
+	"github.com/BlackSound1/Go-B-and-B/internal/handlers"
+	"github.com/BlackSound1/Go-B-and-B/internal/render"
 	"github.com/alexedwards/scs/v2"
 )
 

@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/BlackSound1/Go-B-and-B/pkg/handlers"
+	"github.com/BlackSound1/Go-B-and-B/internal/handlers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
@@ -14,7 +14,7 @@ func routes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Use(middleware.Recoverer) // Recoverer middleware to recover from panics more gracefully
-	mux.Use(NoSurf) // NoSurf middleware to prevent CSRF attacks on POST requests
+	mux.Use(NoSurf)               // NoSurf middleware to prevent CSRF attacks on POST requests
 	mux.Use(SessionLoad)
 
 	// Set up routes
@@ -28,7 +28,7 @@ func routes() http.Handler {
 	mux.Post("/search-availability-json", handlers.Repo.AvailabilityJSON)
 
 	mux.Get("/make-reservation", handlers.Repo.Reservation)
-	
+
 	// Serve static files
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))

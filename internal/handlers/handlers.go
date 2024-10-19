@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/BlackSound1/Go-B-and-B/pkg/config"
-	"github.com/BlackSound1/Go-B-and-B/pkg/models"
-	"github.com/BlackSound1/Go-B-and-B/pkg/render"
+	"github.com/BlackSound1/Go-B-and-B/internal/config"
+	"github.com/BlackSound1/Go-B-and-B/internal/models"
+	"github.com/BlackSound1/Go-B-and-B/internal/render"
 )
 
 // Use the Reposiory design pattern
