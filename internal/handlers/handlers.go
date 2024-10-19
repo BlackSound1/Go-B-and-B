@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/BlackSound1/Go-B-and-B/internal/config"
+	"github.com/BlackSound1/Go-B-and-B/internal/forms"
 	"github.com/BlackSound1/Go-B-and-B/internal/models"
 	"github.com/BlackSound1/Go-B-and-B/internal/render"
 )
@@ -53,7 +54,58 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 }
 
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
+	// Create an empty reservation when page is first loaded
+	var emptyReservation models.Reservation
+
+	data := make(map[string]interface{})
+	data["reservation"] = emptyReservation
+
+	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil), // Have access to form first time it's rendered
+		Data: data,
+	})
+}
+
+func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm() // Try to parse the form
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	// Get form values
+	reservation := models.Reservation{
+		FirstName: r.Form.Get("first_name"),
+		LastName:  r.Form.Get("last_name"),
+		Email:     r.Form.Get("email"),
+		Phone:     r.Form.Get("phone"),
+	}
+
+	// Create form
+	form := forms.New(r.PostForm)
+
+	// Validate form for required fields
+	form.Required("first_name", "last_name", "email")
+	form.MinLength("first_name", 3, r)
+	form.IsEmail("email")
+
+	// If the form is invalid, redisplay the page with the form values
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+
+		render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+
+		return
+	}
+
+	// Take user to the Reservation Summary page
+	m.App.Session.Put(r.Context(), "reservation", reservation) // Save to session
+	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
 }
 
 func (m *Repository) Generals(w http.ResponseWriter, r *http.Request) {
@@ -83,7 +135,7 @@ type jsonResponse struct {
 }
 
 func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
-	
+
 	// Create JSON response
 	resp := jsonResponse{
 		Ok:      true,
@@ -106,4 +158,22 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
+	// The .(models.Reservation) is a type assertion
+	reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+
+	if !ok {
+		log.Println("cannot get item from session")
+		return
+	}
+
+	// Create a map to pass to the template
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.RenderTemplate(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }
