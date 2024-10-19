@@ -9,6 +9,7 @@ import (
 
 	"github.com/BlackSound1/Go-B-and-B/pkg/config"
 	"github.com/BlackSound1/Go-B-and-B/pkg/models"
+	"github.com/justinas/nosurf"
 )
 
 var app *config.AppConfig
@@ -18,12 +19,13 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 
 	return td
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string, templateData *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, templateData *models.TemplateData) {
 	var templateCache map[string]*template.Template
 
 	// If we are using the cache, get the template cache from the app config.
@@ -43,7 +45,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, templateData *models.Tem
 	// Create a buffer of bytes
 	buffer := new(bytes.Buffer)
 
-	templateData = AddDefaultData(templateData)
+	templateData = AddDefaultData(templateData, r)
 
 	_ = template.Execute(buffer, templateData)
 

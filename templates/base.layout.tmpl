@@ -185,22 +185,23 @@
                         title = "",
                     } = c;
         
-                    const { value: formValues } = await Swal.fire({
+                    const { value: result } = await Swal.fire({
                         title: title,
                         html: msg,
                         backdrop: false,
                         focusConfirm: false,
                         showCancelButton: true,
                         willOpen: () => {
-                            const elem = document.getElementById("reservation-dates-modal");
-                            const rp = new DateRangePicker(elem, {
-                                format: 'yyyy-mm-dd',
-                                showOnFocus: true,
-                            })
+                            // If a willOpen callback is defined, call it
+                            if (c.willOpen !== undefined) {
+                                c.willOpen();
+                            }
                         },
                         didOpen: () => {
-                            document.getElementById("start").removeAttribute("disabled");
-                            document.getElementById("end").removeAttribute("disabled");
+                            // If a didOpen callback is defined, call it
+                            if (c.didOpen !== undefined) {
+                                c.didOpen();
+                            }
                         },
                         preConfirm: () => {
                             return [
@@ -210,8 +211,23 @@
                         }
                     });
         
-                    if (formValues) {
-                        Swal.fire(JSON.stringify(formValues));
+                    // If there is a result
+                    if (result) {
+                        // If the result is not cancel
+                        if (result.dismiss !== Swal.DismissReason.cancel) {
+                            // If the result is not empty
+                            if (result.value !== "") {
+
+                                // If there is a callback
+                                if (c.callback !== undefined) {
+                                    c.callback(result);
+                                }
+                            } else {
+                                c.callback(false);
+                            }
+                        }
+                    } else {
+                        c.callback(false);
                     }
                 };
         
