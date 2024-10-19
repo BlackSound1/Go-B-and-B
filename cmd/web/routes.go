@@ -3,12 +3,13 @@ package main
 import (
 	"net/http"
 
+	"github.com/BlackSound1/Go-B-and-B/internal/config"
 	"github.com/BlackSound1/Go-B-and-B/internal/handlers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
-func routes() http.Handler {
+func routes(app *config.AppConfig) http.Handler {
 
 	// Create new multiplexer
 	mux := chi.NewRouter()

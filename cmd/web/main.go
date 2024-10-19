@@ -24,6 +24,35 @@ var session *scs.SessionManager
 
 func main() {
 
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Starting server on port", portNumber)
+
+	// Create new server
+	serv := createNewServer()
+
+	// Start server
+	err = serv.ListenAndServe()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// createNewServer creates a new HTTP server with the specified address and handler.
+func createNewServer() *http.Server {
+	return &http.Server{
+		Addr:    portNumber,
+		Handler: routes(&app),
+	}
+}
+
+// run initializes the app config, template cache, and session info.
+func run() error {
+
 	// Change to true when in production
 	app.InProduction = false
 
@@ -44,6 +73,7 @@ func main() {
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 
 	// Set settings for config
@@ -59,18 +89,5 @@ func main() {
 	// Gives render package access to app config
 	render.NewTemplates(&app)
 
-	fmt.Println("Starting server on port", portNumber)
-
-	// Create new server
-	serv := &http.Server{
-		Addr:    portNumber,
-		Handler: routes(),
-	}
-
-	// Start server
-	err = serv.ListenAndServe()
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	return nil
 }
