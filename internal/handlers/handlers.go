@@ -164,10 +164,18 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	// The .(models.Reservation) is a type assertion
 	reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 
+	// If there is no reservation, redirect to home page
 	if !ok {
 		log.Println("cannot get item from session")
+
+		m.App.Session.Put(r.Context(), "error", "Can't get reservation from session")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+
 		return
 	}
+
+	// Remove the reservation from the session
+	m.App.Session.Remove(r.Context(), "reservation")
 
 	// Create a map to pass to the template
 	data := make(map[string]interface{})
