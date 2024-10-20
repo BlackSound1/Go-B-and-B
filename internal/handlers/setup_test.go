@@ -63,7 +63,7 @@ func getRoutes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Use(middleware.Recoverer) // Recoverer middleware to recover from panics more gracefully
-	mux.Use(NoSurf)               // NoSurf middleware to prevent CSRF attacks on POST requests
+	// mux.Use(NoSurf)               // NoSurf middleware to prevent CSRF attacks on POST requests
 	mux.Use(SessionLoad)
 
 	// Set up routes
