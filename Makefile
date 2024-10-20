@@ -5,17 +5,17 @@ SHELL := /bin/bash
 
 .PHONY: test
 test:   ## Run tests
-	@cd ./cmd/web && go test -v && cd ../../
+	@go test -v ./cmd/web ./internal/handlers/
 
 
 .PHONY: cov-report
 cov-report:  ## Create full coverage report and open in browser
-	@cd ./cmd/web && go test -coverprofile=coverage.out && go tool cover -html=coverage.out && cd ../../
+	@go test -coverprofile=coverage.out ./cmd/web/ ./internal/handlers/ && go tool cover -html=coverage.out
 
 
 .PHONY: cov
 cov:  ## Create short coverage report
-	@cd ./cmd/web && go test -cover && cd ../../
+	@go test -cover ./cmd/web/ ./internal/handlers/
 
 
 .PHONY: run
