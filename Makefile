@@ -24,6 +24,11 @@ run:   ## Run web server
 	@go run ./cmd/web
 
 
+.PHONY: build
+build:  ## Build and run the web server. In older Go versions, `go run` ran tests as well.
+	@go build -o Go-B-and-B ./cmd/web && ./Go-B-and-B
+
+
 .PHONY: help
 help:   ## Show this help
 	@echo -e "\nCommands:\n"
