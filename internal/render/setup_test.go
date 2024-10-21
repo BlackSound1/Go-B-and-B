@@ -2,6 +2,7 @@ package render
 
 import (
 	"encoding/gob"
+	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -19,6 +20,10 @@ func TestMain(m *testing.M) {
 
 	// Change to true when in production
 	testApp.InProduction = false
+
+	// Define loggers. The | is a bitwise OR, so all flags get set to 1 integer value
+	testApp.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	testApp.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// Lets us store Reservations in the session
 	gob.Register(models.Reservation{})

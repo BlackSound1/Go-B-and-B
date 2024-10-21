@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/BlackSound1/Go-B-and-B/internal/config"
 	"github.com/BlackSound1/Go-B-and-B/internal/handlers"
+	"github.com/BlackSound1/Go-B-and-B/internal/helpers"
 	"github.com/BlackSound1/Go-B-and-B/internal/models"
 	"github.com/BlackSound1/Go-B-and-B/internal/render"
 	"github.com/alexedwards/scs/v2"
@@ -56,6 +58,10 @@ func run() error {
 	// Change to true when in production
 	app.InProduction = false
 
+	// Define loggers. The | is a bitwise OR, so all flags get set to 1 integer value
+	app.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
 	// Lets us store Reservations in the session
 	gob.Register(models.Reservation{})
 
@@ -88,6 +94,9 @@ func run() error {
 
 	// Gives render package access to app config
 	render.NewTemplates(&app)
+
+	// Create helpers
+	helpers.NewHelpers(&app)
 
 	return nil
 }

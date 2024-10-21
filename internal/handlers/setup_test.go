@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -29,6 +30,10 @@ func getRoutes() http.Handler {
 
 	// Lets us store Reservations in the session
 	gob.Register(models.Reservation{})
+
+	// Define loggers. The | is a bitwise OR, so all flags get set to 1 integer value
+	app.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// Create session info
 	session = scs.New()
