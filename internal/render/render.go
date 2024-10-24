@@ -18,11 +18,14 @@ var app *config.AppConfig
 var functions = template.FuncMap{}
 var pathToTemplates = "./templates"
 
-// NewTemplates sets the config for the template package
-func NewTemplates(a *config.AppConfig) {
+// NewRenderer sets the config for the template package
+func NewRenderer(a *config.AppConfig) {
 	app = a
 }
 
+// AddDefaultData adds data to the template data that is present on every page, such
+// as the CSRF token and any flash messages. It also removes them from the session
+// so that they are not present on the next request.
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
 	// PopString puts a string into the session until the next request
 	td.Flash = app.Session.PopString(r.Context(), "flash")
@@ -34,7 +37,13 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 	return td
 }
 
-func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, templateData *models.TemplateData) error {
+// Template renders a template to the http.ResponseWriter, given the name of the
+// template and data to pass in. If app.UseCache is true, it will use the
+// template cache stored in the app config. Otherwise, it will create a new cache
+// with the CreateTemplateCache function. If the template does not exist in the
+// cache, it will return an error. It will also add default data to the template
+// data before rendering it, such as the CSRF token and any flash messages.
+func Template(w http.ResponseWriter, r *http.Request, tmpl string, templateData *models.TemplateData) error {
 	var templateCache map[string]*template.Template
 
 	// If we are using the cache, get the template cache from the app config.
@@ -70,6 +79,12 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, templat
 
 }
 
+// CreateTemplateCache creates a map of template names to template sets.
+// It will get all of the files named *.page.tmpl from the pathToTemplates
+// directory and create a template with the name of the file. It will then
+// attempt to find a layout template and add it to the template set. The
+// template set will be added to the map with the name of the page as the key.
+// It returns the populated map.
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	// myCache := make(map[string]*template.Template)
 	myCache := map[string]*template.Template{} // Same as above

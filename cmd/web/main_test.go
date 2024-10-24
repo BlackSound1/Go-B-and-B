@@ -7,7 +7,7 @@ import (
 // TestRun tests the run function which sets up the app
 // config and starts the web server.
 func TestRun(t *testing.T) {
-	err := run()
+	_, err := run()
 
 	if err != nil {
 		t.Error("Failed run()")

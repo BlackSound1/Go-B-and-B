@@ -11,11 +11,13 @@ import (
 	"time"
 
 	"github.com/BlackSound1/Go-B-and-B/internal/config"
+	"github.com/BlackSound1/Go-B-and-B/internal/driver"
 	"github.com/BlackSound1/Go-B-and-B/internal/models"
 	"github.com/BlackSound1/Go-B-and-B/internal/render"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/joho/godotenv"
 	"github.com/justinas/nosurf"
 )
 
@@ -25,6 +27,14 @@ var pathToTemplates = "./../../templates"
 var functions = template.FuncMap{}
 
 func getRoutes() http.Handler {
+
+	// Load .env file
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Cannot load .env file")
+		return nil
+	}
+
 	// Change to true when in production
 	app.InProduction = false
 
@@ -45,6 +55,16 @@ func getRoutes() http.Handler {
 	// Associate session with app config
 	app.Session = session
 
+	// Connect to database
+	log.Println("Connecting to database...")
+	db, err := driver.ConnectSQL(os.Getenv("DB_STRING"))
+
+	if err != nil {
+		log.Fatal("Cannot connect to database!")
+	}
+
+	log.Println("Connected to database")
+
 	// Create template cache and associate it with app config
 	tc, err := CreateTestTemplateCache()
 	if err != nil {
@@ -56,13 +76,13 @@ func getRoutes() http.Handler {
 	app.UseCache = true // To prevent call to CreateTemplateCache() in RenderTemplate()
 
 	// Create new repo and associate it with app config
-	repo := NewRepo(&app)
+	repo := NewRepo(&app, db)
 
 	// Gives handlers package access to app config
 	NewHandlers(repo)
 
 	// Gives render package access to app config
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 
 	// Create new multiplexer
 	mux := chi.NewRouter()
