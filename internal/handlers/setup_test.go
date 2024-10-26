@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"testing"
 	"time"
 
 	"github.com/BlackSound1/Go-B-and-B/internal/config"
@@ -26,13 +27,13 @@ var session *scs.SessionManager
 var pathToTemplates = "./../../templates"
 var functions = template.FuncMap{}
 
-func getRoutes() http.Handler {
+func TestMain(m *testing.M) {
 
 	// Load .env file
-	err := godotenv.Load(".env")
+	err := godotenv.Load("../../.env")
 	if err != nil {
 		log.Fatal("Cannot load .env file")
-		return nil
+		return
 	}
 
 	// Change to true when in production
@@ -57,7 +58,7 @@ func getRoutes() http.Handler {
 
 	// Connect to database
 	log.Println("Connecting to database...")
-	db, err := driver.ConnectSQL(os.Getenv("DB_STRING"))
+	_, err = driver.ConnectSQL(os.Getenv("DB_STRING"))
 
 	if err != nil {
 		log.Fatal("Cannot connect to database!")
@@ -76,13 +77,19 @@ func getRoutes() http.Handler {
 	app.UseCache = true // To prevent call to CreateTemplateCache() in RenderTemplate()
 
 	// Create new repo and associate it with app config
-	repo := NewRepo(&app, db)
+	repo := NewTestRepo(&app)
 
 	// Gives handlers package access to app config
 	NewHandlers(repo)
 
 	// Gives render package access to app config
 	render.NewRenderer(&app)
+
+	// Run the tests
+	os.Exit(m.Run())
+}
+
+func getRoutes() http.Handler {
 
 	// Create new multiplexer
 	mux := chi.NewRouter()

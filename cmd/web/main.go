@@ -29,7 +29,7 @@ var session *scs.SessionManager
 
 func main() {
 
-	db, err := run()
+	db, err := run(".env")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -60,12 +60,12 @@ func createNewServer() *http.Server {
 }
 
 // run initializes the app config, template cache, and session info.
-func run() (*driver.DB, error) {
+func run(envFile string) (*driver.DB, error) {
 
 	// Load .env file
-	err := godotenv.Load(".env")
+	err := godotenv.Load(envFile)
 	if err != nil {
-		return nil, errors.New("cannot load .env file")
+		return nil, errors.New(err.Error())
 	}
 
 	// Change to true when in production

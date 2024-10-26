@@ -7,10 +7,10 @@ import (
 // TestRun tests the run function which sets up the app
 // config and starts the web server.
 func TestRun(t *testing.T) {
-	_, err := run()
+	_, err := run("../../.env")
 
 	if err != nil {
-		t.Error("Failed run()")
+		t.Error("Failed run().", err)
 	}
 }
 

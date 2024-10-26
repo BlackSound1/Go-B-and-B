@@ -37,7 +37,7 @@ func TestSessionLoad(t *testing.T) {
 	// Check that the handler is of type http.Handler
 	switch v := h.(type) {
 	case http.Handler:
-		// do nothing
+		// Do nothing
 	default:
 		t.Errorf("type is not http.Handler, but is %T", v)
 	}
