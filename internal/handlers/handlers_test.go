@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"reflect"
 	"strings"
 	"testing"
@@ -138,8 +139,14 @@ func TestRepository_Reservation(t *testing.T) {
 }
 
 func TestRepository_PostReservation(t *testing.T) {
-	reqBody := "start_date=2050-01-01&end_date=2050-01-02&email=John@Smith.com&phone=123456789&room_id=1"
-	req, _ := http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	postedData := url.Values{}
+	postedData.Add("start_date", "2050-01-01")
+	postedData.Add("end_date", "2050-01-02")
+	postedData.Add("email", "John@Smith.com")
+	postedData.Add("phone", "123456789")
+	postedData.Add("room_id", "1")
+
+	req, _ := http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	ctx := getCtx(req)
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -152,6 +159,7 @@ func TestRepository_PostReservation(t *testing.T) {
 	}
 
 	// Test for missing post body
+
 	req, _ = http.NewRequest("POST", "/make-reservation", nil)
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
@@ -164,9 +172,18 @@ func TestRepository_PostReservation(t *testing.T) {
 		t.Errorf("PostReservation handler returned wrong response code for missing post body: got %d, wanted %d", recorder.Code, http.StatusTemporaryRedirect)
 	}
 
-	// test for invalid start date
-	reqBody = "start_date=invalid&end_date=2050-01-02&first_name=John&last_name=Smith&email=john@smith.com&phone=123456789&room_id=1"
-	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	// Test for invalid start date
+
+	postedData = url.Values{}
+	postedData.Add("start_date", "invalid")
+	postedData.Add("end_date", "2050-01-02")
+	postedData.Add("first_name", "John")
+	postedData.Add("last_name", "Smith")
+	postedData.Add("email", "john@smith.com")
+	postedData.Add("phone", "123456789")
+	postedData.Add("room_id", "1")
+
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -179,8 +196,17 @@ func TestRepository_PostReservation(t *testing.T) {
 	}
 
 	// Test for invalid end date
-	reqBody = "start_date=2050-01-01&end_date=invalid&first_name=John&last_name=Smith&email=john@smith.com&phone=123456789&room_id=1"
-	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+
+	postedData = url.Values{}
+	postedData.Add("start_date", "2050-01-01")
+	postedData.Add("end_date", "invalid")
+	postedData.Add("first_name", "John")
+	postedData.Add("last_name", "Smith")
+	postedData.Add("email", "john@smith.com")
+	postedData.Add("phone", "123456789")
+	postedData.Add("room_id", "1")
+
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -193,8 +219,17 @@ func TestRepository_PostReservation(t *testing.T) {
 	}
 
 	// Test for invalid room id
-	reqBody = "start_date=2050-01-01&end_date=2050-01-02&first_name=John&last_name=Smith&email=john@smith.com&phone=123456789&room_id=invalid"
-	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+
+	postedData = url.Values{}
+	postedData.Add("start_date", "2050-01-01")
+	postedData.Add("end_date", "2050-01-02")
+	postedData.Add("first_name", "John")
+	postedData.Add("last_name", "Smith")
+	postedData.Add("email", "john@smith.com")
+	postedData.Add("phone", "123456789")
+	postedData.Add("room_id", "invalid")
+
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -207,8 +242,17 @@ func TestRepository_PostReservation(t *testing.T) {
 	}
 
 	// Test for invalid data
-	reqBody = "start_date=2050-01-01&end_date=2050-01-02&first_name=J&last_name=Smith&email=john@smith.com&phone=123456789&room_id=1"
-	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+
+	postedData = url.Values{}
+	postedData.Add("start_date", "2050-01-01")
+	postedData.Add("end_date", "2050-01-02")
+	postedData.Add("first_name", "J")
+	postedData.Add("last_name", "Smith")
+	postedData.Add("email", "john@smith.com")
+	postedData.Add("phone", "123456789")
+	postedData.Add("room_id", "1")
+
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -221,8 +265,17 @@ func TestRepository_PostReservation(t *testing.T) {
 	}
 
 	// Test for failure to insert reservation into database
-	reqBody = "start_date=2050-01-01&end_date=2050-01-02&first_name=John&last_name=Smith&email=john@smith.com&phone=123456789&room_id=2"
-	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	
+	postedData = url.Values{}
+	postedData.Add("start_date", "2050-01-01")
+	postedData.Add("end_date", "2050-01-02")
+	postedData.Add("first_name", "John")
+	postedData.Add("last_name", "Smith")
+	postedData.Add("email", "john@smith.com")
+	postedData.Add("phone", "123456789")
+	postedData.Add("room_id", "2")
+
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -235,8 +288,17 @@ func TestRepository_PostReservation(t *testing.T) {
 	}
 
 	// Test for failure to insert restriction into database
-	reqBody = "start_date=2050-01-01&end_date=2050-01-02&first_name=John&last_name=Smith&email=john@smith.com&phone=123456789&room_id=1000"
-	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	
+	postedData = url.Values{}
+	postedData.Add("start_date", "2050-01-01")
+	postedData.Add("end_date", "2050-01-02")
+	postedData.Add("first_name", "John")
+	postedData.Add("last_name", "Smith")
+	postedData.Add("email", "john@smith.com")
+	postedData.Add("phone", "123456789")
+	postedData.Add("room_id", "1000")
+
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
