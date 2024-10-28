@@ -12,6 +12,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/joho/godotenv v1.5.1
+	github.com/xhit/go-simple-mail v2.2.2+incompatible
 )
 
 require (

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -137,6 +138,14 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get the room by ID
+	room, err := m.DB.GetRoomByID(roomID)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "can't find room")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
 	reservation := models.Reservation{
 		FirstName: r.Form.Get("first_name"),
 		LastName:  r.Form.Get("last_name"),
@@ -145,6 +154,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		StartDate: startDate,
 		EndDate:   endDate,
 		RoomID:    roomID,
+		Room:      room,
 	}
 
 	form := forms.New(r.PostForm)
@@ -156,7 +166,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]interface{})
 		data["reservation"] = reservation
-		http.Error(w, "my own error message", http.StatusSeeOther)
+		http.Error(w, "form is not valid", http.StatusSeeOther)
 		render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
 			Form: form,
 			Data: data,
@@ -185,6 +195,64 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+
+	// Send email to guest
+
+	msg := models.MailData{
+		To:       reservation.Email,
+		From:     "me@here.com",
+		Subject:  "Reservation Confirmation",
+		Template: "guest_email_confirmation.html",
+		Content: fmt.Sprintf(
+			`
+				<tr>
+					<td>%s %s</td>
+					<td>%s</td>
+					<td>%s</td>
+					<td>%s</td>
+					<td>%s to %s</td>
+				</tr>
+			`,
+			reservation.FirstName,
+			reservation.LastName,
+			reservation.Email,
+			reservation.Phone,
+			reservation.Room.RoomName,
+			reservation.StartDate.Format("2006-01-02"),
+			reservation.EndDate.Format("2006-01-02"),
+		),
+	}
+
+	m.App.MailChan <- msg
+
+	// Send email to property owner
+
+	msg = models.MailData{
+		To:       "me@here.com",
+		From:     "me@here.com",
+		Subject:  "Reservation Confirmation (Owner)",
+		Template: "owner_email_confirmation.html",
+		Content: fmt.Sprintf(
+			`
+				<tr>
+					<td>%s %s</td>
+					<td>%s</td>
+					<td>%s</td>
+					<td>%s</td>
+					<td>%s to %s</td>
+				</tr>
+			`,
+			reservation.FirstName,
+			reservation.LastName,
+			reservation.Email,
+			reservation.Phone,
+			reservation.Room.RoomName,
+			reservation.StartDate.Format("2006-01-02"),
+			reservation.EndDate.Format("2006-01-02"),
+		),
+	}
+
+	m.App.MailChan <- msg
 
 	m.App.Session.Put(r.Context(), "reservation", reservation)
 	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)

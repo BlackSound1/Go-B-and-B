@@ -38,6 +38,13 @@ func main() {
 	// when main loop is finished, not when run() returns
 	defer db.SQL.Close()
 
+	// Close the mail channel when the main loop is finished
+	defer close(app.MailChan)
+
+	// Listen for mail
+	log.Println("Starting mail listener...")
+	listenForMail()
+
 	fmt.Println("Starting server on port", portNumber)
 
 	// Create new server
@@ -80,6 +87,10 @@ func run(envFile string) (*driver.DB, error) {
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
+
+	// Create channel for email data and add it to App config
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
 
 	// Create session info
 	session = scs.New()
