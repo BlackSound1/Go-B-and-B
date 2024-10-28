@@ -53,6 +53,8 @@ var theTests = []struct {
 	// }, http.StatusOK},
 }
 
+// TestHandlers tests all the routes in the application. It sends a GET request to
+// each route and checks that the status code of the response is as expected.
 func TestHandlers(t *testing.T) {
 	routes := getRoutes() // Get the routes to test
 
@@ -69,7 +71,6 @@ func TestHandlers(t *testing.T) {
 
 		// Use the test server client to send a GET request and get the response
 		resp, err := testServer.Client().Get(baseURL + test.url)
-
 		if err != nil {
 			t.Log("Error", err)
 			t.Fatal(err)
@@ -82,6 +83,7 @@ func TestHandlers(t *testing.T) {
 	}
 }
 
+// TestRepository_Reservation tests the Reservation handler for various scenarios.
 func TestRepository_Reservation(t *testing.T) {
 	reservation := models.Reservation{
 		RoomID: 1,
@@ -138,6 +140,7 @@ func TestRepository_Reservation(t *testing.T) {
 	}
 }
 
+// TestRepository_PostReservation tests the PostReservation handler for various scenarios.
 func TestRepository_PostReservation(t *testing.T) {
 	postedData := url.Values{}
 	postedData.Add("start_date", "2050-01-01")
@@ -311,6 +314,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	}
 }
 
+// TestRepository_NewRepo tests that the NewRepo function returns a Repository
+// type
 func TestRepository_NewRepo(t *testing.T) {
 	var db driver.DB
 	testRepo := NewRepo(&app, &db)
@@ -321,6 +326,7 @@ func TestRepository_NewRepo(t *testing.T) {
 	}
 }
 
+// TestRepository_PostAvailability tests the PostAvailability handler for various scenarios.
 func TestRepository_PostAvailability(t *testing.T) {
 	// Test case where rooms not available
 
@@ -412,6 +418,7 @@ func TestRepository_PostAvailability(t *testing.T) {
 	}
 }
 
+// TestRepository_AvailabilityJSON tests the AvailabilityJSON handler for various scenarios.
 func TestRepository_AvailabilityJSON(t *testing.T) {
 	// Test case where rooms not available
 
@@ -513,6 +520,7 @@ func TestRepository_AvailabilityJSON(t *testing.T) {
 
 }
 
+// TestRepository_ReservationSummary tests the ReservationSummary handler for various scenarios.
 func TestRepository_ReservationSummary(t *testing.T) {
 
 	// Test case where the reservation is in the session
@@ -549,6 +557,7 @@ func TestRepository_ReservationSummary(t *testing.T) {
 	}
 }
 
+// TestRepository_ChooseRoom tests the ChooseRoom handler for various scenarios.
 func TestRepository_ChooseRoom(t *testing.T) {
 	// Test case where reservation is in the session
 	reservation := models.Reservation{
@@ -602,6 +611,7 @@ func TestRepository_ChooseRoom(t *testing.T) {
 	}
 }
 
+// TestRepository_BookRoom tests the BookRoom handler for various scenarios.
 func TestRepository_BookRoom(t *testing.T) {
 	// Test case where the database works
 

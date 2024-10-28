@@ -11,6 +11,8 @@ import (
 	mail "github.com/xhit/go-simple-mail"
 )
 
+// listenForMail starts a goroutine that continuously listens for messages on the mail channel.
+// When a message is received, it calls sendMessage to process and send the email.
 func listenForMail() {
 
 	// Create function that runs forever in the background.
@@ -23,6 +25,8 @@ func listenForMail() {
 	}()
 }
 
+// sendMessage sends an email using the provided MailData. It configures the SMTP server,
+// creates the email message, and sends it.
 func sendMessage(m models.MailData) {
 	// Create mail server object
 	server := mail.NewSMTPClient()

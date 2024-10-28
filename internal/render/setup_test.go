@@ -16,6 +16,8 @@ import (
 var session *scs.SessionManager
 var testApp config.AppConfig
 
+// TestMain sets up the testing environment and runs the tests. It is the
+// entrypoint for the testing framework.
 func TestMain(m *testing.M) {
 
 	// Change to true when in production

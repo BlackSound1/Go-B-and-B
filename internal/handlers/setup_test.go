@@ -27,6 +27,8 @@ var session *scs.SessionManager
 var pathToTemplates = "./../../templates"
 var functions = template.FuncMap{}
 
+// TestMain sets up the testing environment and runs the tests. It is the
+// entrypoint for the testing framework.
 func TestMain(m *testing.M) {
 
 	// Load .env file
@@ -55,6 +57,12 @@ func TestMain(m *testing.M) {
 
 	// Associate session with app config
 	app.Session = session
+
+	// Set up dummy mail channel
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
+	defer close(app.MailChan)
+	listenForMail()
 
 	// Connect to database
 	log.Println("Connecting to database...")
@@ -89,6 +97,17 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
+// listenForMail starts a goroutine to listen for messages on the app's mail channel.
+// This is just a dummy implementation for testing
+func listenForMail() {
+	go func() {
+		for {
+			_ = <-app.MailChan
+		}
+	}()
+}
+
+// getRoutes returns the chi multiplexer with routes set up for application testing
 func getRoutes() http.Handler {
 
 	// Create new multiplexer
@@ -140,6 +159,7 @@ func SessionLoad(next http.Handler) http.Handler {
 	return session.LoadAndSave(next)
 }
 
+// CreateTestTemplateCache creates a map of template names to template sets for testing purposes.
 func CreateTestTemplateCache() (map[string]*template.Template, error) {
 	// myCache := make(map[string]*template.Template)
 	myCache := map[string]*template.Template{} // Same as above

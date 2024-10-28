@@ -81,6 +81,8 @@ func TestNewTempleset(t *testing.T) {
 	NewRenderer(app)
 }
 
+// TestCreateTemplateCache tests that the template cache is created when calling the
+// CreateTemplateCache function.
 func TestCreateTemplateCache(t *testing.T) {
 	pathToTemplates = "./../../templates"
 
