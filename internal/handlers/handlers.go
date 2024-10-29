@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -507,4 +508,67 @@ func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 
 	// Redirect to make reservation page
 	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
+}
+
+// ShowLogin displays the login page
+func (m *Repository) ShowLogin(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "login.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+	})
+}
+
+// PostShowLogin handles the login form submission.
+func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
+	// Prevents Session Fixation Attack. Best to renew token at each login and logout
+	_ = m.App.Session.RenewToken(r.Context())
+
+	// Parse the form
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Get form data
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
+
+	form := forms.New(r.PostForm)      // Create new form
+	form.Required("email", "password") // Set certain fields as required
+	form.IsEmail("email")              // Check if email is valid
+
+	if !form.Valid() {
+		// If the form is not valid, render the login page with the form data
+		render.Template(w, r, "login.page.tmpl", &models.TemplateData{
+			Form: form,
+		})
+		return
+	}
+
+	// Try to authenticate user
+	id, _, err := m.DB.Authenticate(email, password)
+	if err != nil {
+		log.Println(err)
+
+		// If not authenticated, redirect and add error to session
+		m.App.Session.Put(r.Context(), "error", "Invalid login credentials")
+		http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+	}
+
+	// Add user to session, flash success message, and redirect
+	m.App.Session.Put(r.Context(), "user_id", id)
+	m.App.Session.Put(r.Context(), "flash", "Logged in successfully")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+// Logout logs the user out of the system
+// It destroys the session, renews the CSRF token, and redirects to the login screen
+func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
+	// Destroy whole session
+	_ = m.App.Session.Destroy(r.Context())
+
+	// Renew token
+	_ = m.App.Session.RenewToken(r.Context())
+
+	// Redirect to login screen
+	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 }

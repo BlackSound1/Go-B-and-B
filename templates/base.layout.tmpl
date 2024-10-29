@@ -48,6 +48,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/contact">Contact</a>
                     </li>
+                    <li class="nav-item">
+                        <!-- Toggle Log In/ Log Out depending on authentication -->
+                        {{ if eq .IsAuthenticated 1 }}
+                            <a class="nav-link" href="/user/logout">Log Out</a>
+                        {{ else }}
+                            <a class="nav-link" href="/user/login">Log In</a>
+                        {{ end }}
+                    </li>
                 </ul>
             </div>
         </nav>
