@@ -49,9 +49,18 @@
                         <a class="nav-link" href="/contact">Contact</a>
                     </li>
                     <li class="nav-item">
-                        <!-- Toggle Log In/ Log Out depending on authentication -->
+                        <!-- Toggle depending on authentication -->
                         {{ if eq .IsAuthenticated 1 }}
-                            <a class="nav-link" href="/user/logout">Log Out</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="/admin/dashboard">Dashboard</a>
+                                    <a class="dropdown-item" href="/user/logout">Log Out</a>
+                                </div>
+                            </li>
                         {{ else }}
                             <a class="nav-link" href="/user/login">Log In</a>
                         {{ end }}
