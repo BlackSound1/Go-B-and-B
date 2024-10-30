@@ -129,3 +129,10 @@ func (m *testDBRepo) AllReservations() ([]models.Reservation, error) {
 
 	return res, nil
 }
+
+func (m *testDBRepo) AllNewReservations() ([]models.Reservation, error) {
+
+	var res []models.Reservation
+
+	return res, nil
+}
