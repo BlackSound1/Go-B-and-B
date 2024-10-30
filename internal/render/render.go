@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/BlackSound1/Go-B-and-B/internal/config"
 	"github.com/BlackSound1/Go-B-and-B/internal/models"
@@ -15,12 +16,21 @@ import (
 )
 
 var app *config.AppConfig
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"humanDate": HumanDate,
+}
 var pathToTemplates = "./templates"
 
 // NewRenderer sets the config for the template package
 func NewRenderer(a *config.AppConfig) {
 	app = a
+}
+
+// HumanDate takes a time.Time and returns a string representing the date in the
+// format YYYY-MM-DD. It exists to be used as a template function in the
+// template.FuncMap, which is why it is exposed as a public function.
+func HumanDate(t time.Time) string {
+	return t.Format("2006-01-02")
 }
 
 // AddDefaultData adds data to the template data that is present on every page, such

@@ -25,6 +25,9 @@ func NewPostgresRepo(conn *sql.DB, a *config.AppConfig) repository.DatabaseRepo 
 	}
 }
 
+// NewTestingRepo creates a new test repository with the provided application
+// configuration. It returns a DatabaseRepo interface suitable for testing
+// purposes without a real database connection.
 func NewTestingRepo(a *config.AppConfig) repository.DatabaseRepo {
 	return &testDBRepo{
 		App: a,
