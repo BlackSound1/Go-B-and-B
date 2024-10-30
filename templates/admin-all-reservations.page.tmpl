@@ -30,7 +30,11 @@
                 {{ range $res }}
                     <tr>
                         <td>{{ .ID }}</td>
-                        <td>{{ .LastName }}</td>
+                        <td>
+                            <a href="/admin/reservations/all/{{ .ID }}" style="text-decoration: none;">
+                                {{ .LastName }}
+                            </a>
+                        </td>
                         <td>{{ .Room.RoomName }}</td>
                         <td>{{ humanDate .StartDate }}</td>
                         <td>{{ humanDate .EndDate }}</td>
@@ -46,7 +50,15 @@
             type="text/javascript"></script>
 
     <script>
-        const dataTable = new simpleDatatables.DataTable("#all-res", {});
-
+        // Make sure DOM content is fully loaded before handling the table
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Create a simple DataTable based on #all-res, sortable on the third
+            // column (Arrival), descending
+            const dataTable = new simpleDatatables.DataTable("#all-res", {
+                select: 3,
+                sort: "desc"
+            });
+        })
     </script>
 {{ end }}
