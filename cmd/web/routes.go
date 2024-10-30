@@ -44,6 +44,10 @@ func routes(app *config.AppConfig) http.Handler {
 		r.Use(Auth)
 
 		r.Get("/dashboard", handlers.Repo.AdminDashboard)
+
+		r.Get("/reservations-new", handlers.Repo.AdminNewReservations)
+		r.Get("/reservations-all", handlers.Repo.AdminAllReservations)
+		r.Get("/reservations-calendar", handlers.Repo.AdminReservationCalendar)
 	})
 
 	// Serve static files
