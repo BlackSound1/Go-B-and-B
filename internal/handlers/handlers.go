@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/BlackSound1/Go-B-and-B/internal/config"
@@ -611,6 +612,43 @@ func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request
 
 	render.Template(w, r, "admin-all-reservations.page.tmpl", &models.TemplateData{
 		Data: data,
+	})
+}
+
+// AdminShowReservation renders the page for showing a reservation.
+func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
+
+	// Get URL and get the parts of the URL
+	exploded := strings.Split(r.RequestURI, "/")
+
+	// Try to get the ID from the URL
+	id, err := strconv.Atoi(exploded[4])
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	// Get endpoint from which this page was reached. Can get here from
+	// "/admin/reservations/all" or "/admin/reservations/new"
+	src := exploded[3]
+
+	stringMap := make(map[string]string)
+	stringMap["src"] = src
+
+	// Get reservation from database
+	res, err := m.DB.GetReservationByID(id)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservation"] = res
+
+	render.Template(w, r, "admin-reservations-show.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+		Data:      data,
+		Form:      forms.New(nil),
 	})
 }
 
