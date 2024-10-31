@@ -51,6 +51,7 @@ func routes(app *config.AppConfig) http.Handler {
 		r.Get("/reservations/{src}/{id}", handlers.Repo.AdminShowReservation)
 		r.Post("/reservations/{src}/{id}", handlers.Repo.AdminPostShowReservation)
 		r.Get("/process-reservation/{src}/{id}", handlers.Repo.AdminProcessReservation)
+		r.Get("/delete-reservation/{src}/{id}", handlers.Repo.AdminDeleteReservation)
 	})
 
 	// Serve static files

@@ -57,9 +57,18 @@
 
             <hr>
             
-            <input type="submit" class="btn btn-primary" value="Save Reservation">
-            <a href="/admin/reservations-{{ $src }}" class="btn btn-warning">Cancel</a>
-            <a href="#!" class="btn btn-info" onclick="processRes({{ $res.ID }})">Mark as Processed</a>
+            <div class="float-start">
+                <input type="submit" class="btn btn-primary" value="Save Reservation">
+                <a href="/admin/reservations-{{ $src }}" class="btn btn-warning">Cancel</a>
+                <a href="#!" class="btn btn-info" onclick="processRes({{ $res.ID }})">Mark as Processed</a>
+            </div>
+
+            <div class="float-end">
+                <a href="#!" class="btn btn-danger" onclick="deleteRes({{ $res.ID }})">Delete</a>
+            </div>
+
+            <!-- End the floating left and right -->
+            <div class="clearfix"></div>
         </form>
     </div>
 {{ end }}
@@ -77,6 +86,19 @@
                     if (result !== false) {
                         // Redirect to URL
                         window.location.href = "/admin/process-reservation/{{ $src }}/" + id;
+                    }
+                }
+            })
+        }
+
+        const deleteRes = id => {
+            attention.custom({
+                icon: "warning",
+                msg: "Are you sure?",
+                callback: result => {
+                    if (result !== false) {
+                        // Redirect to URL
+                        window.location.href = "/admin/delete-reservation/{{ $src }}/" + id;
                     }
                 }
             })
