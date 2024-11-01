@@ -87,6 +87,7 @@ func run(envFile string) (*driver.DB, error) {
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
+	gob.Register(map[string]int{})
 
 	// Create channel for email data and add it to App config
 	mailChan := make(chan models.MailData)

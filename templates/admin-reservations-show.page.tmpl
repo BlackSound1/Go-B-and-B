@@ -59,7 +59,16 @@
             
             <div class="float-start">
                 <input type="submit" class="btn btn-primary" value="Save Reservation">
-                <a href="/admin/reservations-{{ $src }}" class="btn btn-warning">Cancel</a>
+
+                <!-- If came from calendar, just go back in the browser history -->
+                {{ if eq $src "cal" }}
+                    <a href="#!" onclick="window.history.go(-1)" class="btn btn-warning">Cancel</a>
+
+                <!-- Otherwise, go back to the all or new page -->
+                {{ else }}
+                    <a href="/admin/reservations-{{ $src }}" class="btn btn-warning">Cancel</a>
+                {{ end }}
+
                 <a href="#!" class="btn btn-info" onclick="processRes({{ $res.ID }})">Mark as Processed</a>
             </div>
 
@@ -103,7 +112,5 @@
                 }
             })
         }
-
     </script>
-
 {{ end }}

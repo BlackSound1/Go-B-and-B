@@ -5,7 +5,80 @@
 {{ end }}
 
 {{ define "content" }}
+    {{ $now := index .Data "now" }}
+    {{ $rooms := index .Data "rooms" }}
+    {{ $daysInMonth := index .IntMap "days_in_month" }}
+    {{ $currMonth := index .StringMap "this_month" }}
+    {{ $currYear := index .StringMap "this_month_year" }}
+
     <div class="col-md 12">
-        Reservation calendar content
+        <div class="text-center">
+            <h3>
+                {{ formatDate $now "January" }} {{ formatDate $now "2006" }}
+            </h3>
+
+            <div class="float-start">
+                <a 
+                    class="btn btn-sm btn-outline-secondary"
+                    href="/admin/reservations-calendar?y={{ index .StringMap "prev_month_year" }}&m={{ index .StringMap "prev_month" }}">
+                    &lt;&lt;
+                </a>
+            </div>
+
+            <div class="float-end">
+                <a 
+                    class="btn btn-sm btn-outline-secondary"
+                    href="/admin/reservations-calendar?y={{ index .StringMap "next_month_year" }}&m={{ index .StringMap "next_month" }}">
+                    &gt;&gt;
+                </a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            {{ range $rooms }}
+                {{ $roomID := .ID }}
+                {{ $blocks := index $.Data (printf "block_map_%d" .ID) }}
+                {{ $reservations := index $.Data (printf "reservation_map_%d" .ID) }}
+
+                <h4 class="mt-4">{{ .RoomName }}</h4>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <tr class="table-dark">
+                            <!-- Create a cell for each day of the month -->
+                            {{ range $index := iterate $daysInMonth }}
+                                <td class="text-center">
+                                    {{ add $index 1 }}
+                                </td>
+                            {{ end }}
+                        </tr>
+
+                        <tr>
+                            <!-- Go through each day. If there is a reservation, show a link to it. -->
+                            <!-- If it's a block, show an input checkbox. -->
+                            {{ range $index := iterate $daysInMonth }}
+                                <td class="text-center">
+                                    {{ if gt (index $reservations (printf "%s-%s-%d" $currYear $currMonth (add $index 1))) 0 }}
+                                        <a href="/admin/reservations/cal/{{ index $reservations (printf "%s-%s-%d" $currYear $currMonth (add $index 1)) }}">
+                                            <span class="text-danger">R</span>
+                                        </a>
+                                    {{ else }}
+                                        <input 
+                                            {{ if gt (index $blocks (printf "%s-%s-%d" $currYear $currMonth (add $index 1))) 0 }}
+                                                checked
+                                                name="remove_block_{{ $roomID }}_{{ printf "%s-%s-%d" $currYear $currMonth (add $index 1) }}"
+                                                value="{{ index $blocks (printf "%s-%s-%d" $currYear $currMonth (add $index 1)) }}"
+                                            {{ else }}
+                                                name="add_block_{{ $roomID }}_{{ printf "%s-%s-%d" $currYear $currMonth (add $index 1) }}"
+                                            {{ end }}
+                                        type="checkbox">
+                                    {{ end }}
+                                </td>
+                            {{ end }}
+                        </tr>
+                    </table>
+                </div>
+            {{ end }}
+        </div>
     </div>
 {{ end }}

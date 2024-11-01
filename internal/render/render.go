@@ -17,13 +17,42 @@ import (
 
 var app *config.AppConfig
 var functions = template.FuncMap{
-	"humanDate": HumanDate,
+	"humanDate":  HumanDate,
+	"formatDate": FormatDate,
+	"iterate":    Iterate,
+	"add":        Add,
 }
 var pathToTemplates = "./templates"
 
 // NewRenderer sets the config for the template package
 func NewRenderer(a *config.AppConfig) {
 	app = a
+}
+
+// Add returns the sum of a and b.
+func Add(a, b int) int {
+	return a + b
+}
+
+// Iterate returns a slice of integers. The size of the slice
+// is determined by the count parameter. The slice can be used in a template to loop over the
+// items in the slice. E.g. {{range .Items | Iterate 5}}<li>List item #{{.}}</li>{{end}}
+func Iterate(count int) []int {
+	var i int
+	var items []int
+
+	for i = 0; i < count; i++ {
+		items = append(items, i)
+	}
+
+	return items
+}
+
+// FormatDate takes a time.Time and a string format and returns a string
+// representing the date in the given format. It exists to be used as a
+// template function in the template.FuncMap.
+func FormatDate(t time.Time, f string) string {
+	return t.Format(f)
 }
 
 // HumanDate takes a time.Time and returns a string representing the date in the
