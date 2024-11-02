@@ -48,10 +48,11 @@ func routes(app *config.AppConfig) http.Handler {
 		r.Get("/reservations-new", handlers.Repo.AdminNewReservations)
 		r.Get("/reservations-all", handlers.Repo.AdminAllReservations)
 		r.Get("/reservations-calendar", handlers.Repo.AdminReservationCalendar)
-		r.Get("/reservations/{src}/{id}", handlers.Repo.AdminShowReservation)
+		r.Post("/reservations-calendar", handlers.Repo.AdminPostReservationCalendar)
+		r.Get("/reservations/{src}/{id}/show", handlers.Repo.AdminShowReservation)
 		r.Post("/reservations/{src}/{id}", handlers.Repo.AdminPostShowReservation)
-		r.Get("/process-reservation/{src}/{id}", handlers.Repo.AdminProcessReservation)
-		r.Get("/delete-reservation/{src}/{id}", handlers.Repo.AdminDeleteReservation)
+		r.Get("/process-reservation/{src}/{id}/do", handlers.Repo.AdminProcessReservation)
+		r.Get("/delete-reservation/{src}/{id}/do", handlers.Repo.AdminDeleteReservation)
 	})
 
 	// Serve static files
