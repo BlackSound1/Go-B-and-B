@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/BlackSound1/Go-B-and-B/internal/config"
-	"github.com/BlackSound1/Go-B-and-B/internal/driver"
 	"github.com/BlackSound1/Go-B-and-B/internal/models"
 	"github.com/BlackSound1/Go-B-and-B/internal/render"
 	"github.com/alexedwards/scs/v2"
@@ -25,7 +24,12 @@ import (
 var app config.AppConfig
 var session *scs.SessionManager
 var pathToTemplates = "./../../templates"
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"humanDate":  render.HumanDate,
+	"formatDate": render.FormatDate,
+	"iterate":    render.Iterate,
+	"add":        render.Add,
+}
 
 // TestMain sets up the testing environment and runs the tests. It is the
 // entrypoint for the testing framework.
@@ -41,8 +45,12 @@ func TestMain(m *testing.M) {
 	// Change to true when in production
 	app.InProduction = false
 
-	// Lets us store Reservations in the session
+	// Lets us store models in the session
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(map[string]int{})
 
 	// Define loggers. The | is a bitwise OR, so all flags get set to 1 integer value
 	app.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
@@ -63,16 +71,6 @@ func TestMain(m *testing.M) {
 	app.MailChan = mailChan
 	defer close(app.MailChan)
 	listenForMail()
-
-	// Connect to database
-	log.Println("Connecting to database...")
-	_, err = driver.ConnectSQL(os.Getenv("DB_STRING"))
-
-	if err != nil {
-		log.Fatal("Cannot connect to database!")
-	}
-
-	log.Println("Connected to database")
 
 	// Create template cache and associate it with app config
 	tc, err := CreateTestTemplateCache()
@@ -130,6 +128,21 @@ func getRoutes() http.Handler {
 	mux.Get("/make-reservation", Repo.Reservation)
 	mux.Post("/make-reservation", Repo.PostReservation)
 	mux.Get("/reservation-summary", Repo.ReservationSummary)
+
+	mux.Get("/user/login", Repo.ShowLogin)
+	mux.Post("/user/login", Repo.PostShowLogin)
+	mux.Get("/user/logout", Repo.Logout)
+
+	mux.Get("/admin/dashboard", Repo.AdminDashboard)
+
+	mux.Get("/admin/reservations-new", Repo.AdminNewReservations)
+	mux.Get("/admin/reservations-all", Repo.AdminAllReservations)
+	mux.Get("/admin/reservations-calendar", Repo.AdminReservationCalendar)
+	mux.Post("/admin/reservations-calendar", Repo.AdminPostReservationCalendar)
+	mux.Get("/admin/reservations/{src}/{id}/show", Repo.AdminShowReservation)
+	mux.Post("/admin/reservations/{src}/{id}", Repo.AdminPostShowReservation)
+	mux.Get("/admin/process-reservation/{src}/{id}/do", Repo.AdminProcessReservation)
+	mux.Get("/admin/delete-reservation/{src}/{id}/do", Repo.AdminDeleteReservation)
 
 	// Serve static files
 	fileServer := http.FileServer(http.Dir("./static/"))

@@ -119,8 +119,12 @@ func (m *testDBRepo) UpdateUser(u models.User) error {
 }
 
 func (m *testDBRepo) Authenticate(email, testPassword string) (int, string, error) {
+	if email == "asd@asd.asd" {
+		return 1, "", nil
+	} else {
+		return 0, "", errors.New("some error")
+	}
 
-	return 1, "", nil
 }
 
 func (m *testDBRepo) AllReservations() ([]models.Reservation, error) {
