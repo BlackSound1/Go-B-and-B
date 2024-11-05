@@ -113,23 +113,23 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sd := r.Form.Get("start_date")
-	ed := r.Form.Get("end_date")
+	start := r.Form.Get("start_date")
+	end := r.Form.Get("end_date")
 
 	// 2020-01-01 -- 01/02 03:04:05PM '06 -0700
 
 	layout := "2006-01-02"
 
-	startDate, err := time.Parse(layout, sd)
+	startDate, err := time.Parse(layout, start)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't parse start date")
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
-	endDate, err := time.Parse(layout, ed)
+	endDate, err := time.Parse(layout, end)
 	if err != nil {
-		m.App.Session.Put(r.Context(), "error", "can't get parse end date")
+		m.App.Session.Put(r.Context(), "error", "can't parse end date")
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -166,12 +166,17 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	form.MinLength("first_name", 3)
 	form.IsEmail("email")
 
+	stringMap := make(map[string]string)
+	stringMap["start_date"] = startDate.Format("2006-01-02")
+	stringMap["end_date"] = endDate.Format("2006-01-02")
+
 	if !form.Valid() {
 		data := make(map[string]interface{})
 		data["reservation"] = reservation
 		render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
 			Form: form,
 			Data: data,
+			StringMap: stringMap,
 		})
 		return
 	}
@@ -897,7 +902,7 @@ func (m *Repository) AdminPostReservationCalendar(w http.ResponseWriter, r *http
 	}
 
 	// Add new blocks
-	for name, _ := range r.PostForm {
+	for name := range r.PostForm {
 		if strings.HasPrefix(name, "add_block") {
 			exploded := strings.Split(name, "_")
 			roomID, _ := strconv.Atoi(exploded[2])
