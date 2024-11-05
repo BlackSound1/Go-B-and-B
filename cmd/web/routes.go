@@ -40,8 +40,10 @@ func routes(app *config.AppConfig) http.Handler {
 
 	// All routes starting with /admin will be protected
 	mux.Route("/admin", func(r chi.Router) {
-		// Protect these routes
-		r.Use(Auth)
+		// Protect these routes, but only if the app is in production
+		if app.InProduction {
+			r.Use(Auth)
+		}
 
 		r.Get("/dashboard", handlers.Repo.AdminDashboard)
 

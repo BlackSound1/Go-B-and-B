@@ -3,9 +3,12 @@ package helpers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"runtime/debug"
+	"strconv"
 
 	"github.com/BlackSound1/Go-B-and-B/internal/config"
+	"github.com/joho/godotenv"
 )
 
 var app *config.AppConfig
@@ -43,4 +46,20 @@ func ServerError(w http.ResponseWriter, err error) {
 // for "user_id".
 func IsAuthenticated(r *http.Request) bool {
 	return app.Session.Exists(r.Context(), "user_id")
+}
+
+// getAllDotEnv reads all the environment variables from the given
+// .env file and puts them into a map.
+func GetAllDotEnv(envfile string) map[string]any {
+	godotenv.Load(envfile)
+
+	connStr := os.Getenv("DB_STRING")
+	prod, _ := strconv.ParseBool(os.Getenv("PROD"))
+	useCache, _ := strconv.ParseBool(os.Getenv("USE_TEMPLATE_CACHE"))
+
+	return map[string]any{
+		"DATABASE_URL":       connStr,
+		"PROD":               prod,
+		"USE_TEMPLATE_CACHE": useCache,
+	}
 }

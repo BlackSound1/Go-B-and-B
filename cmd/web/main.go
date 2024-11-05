@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/gob"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,7 +15,6 @@ import (
 	"github.com/BlackSound1/Go-B-and-B/internal/models"
 	"github.com/BlackSound1/Go-B-and-B/internal/render"
 	"github.com/alexedwards/scs/v2"
-	"github.com/joho/godotenv"
 )
 
 const portNumber = ":8080"
@@ -69,14 +67,14 @@ func createNewServer() *http.Server {
 // run initializes the app config, template cache, and session info.
 func run(envFile string) (*driver.DB, error) {
 
-	// Load .env file
-	err := godotenv.Load(envFile)
-	if err != nil {
-		return nil, errors.New(err.Error())
-	}
+	// Populate app config EnvVars
+	envVars := helpers.GetAllDotEnv(envFile)
+
+	// Load the environment variables into the app config
+	app.EnvVars = envVars
 
 	// Change to true when in production
-	app.InProduction = false
+	app.InProduction = app.EnvVars["PROD"].(bool)
 
 	// Define loggers. The | is a bitwise OR, so all flags get set to 1 integer value
 	app.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
@@ -122,7 +120,7 @@ func run(envFile string) (*driver.DB, error) {
 
 	// Set settings for config
 	app.TemplateCache = tc
-	app.UseCache = false
+	app.UseCache = app.EnvVars["USE_TEMPLATE_CACHE"].(bool)
 
 	// Create new repo and associate it with app config and db
 	repo := handlers.NewRepo(&app, db)

@@ -17,4 +17,5 @@ type AppConfig struct {
 	InProduction  bool
 	Session       *scs.SessionManager
 	MailChan      chan models.MailData
+	EnvVars       map[string]any
 }
