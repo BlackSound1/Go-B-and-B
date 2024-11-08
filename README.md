@@ -35,24 +35,82 @@ A web app for a fictional Bed and Breakfast, written in Go.
 - Datepickers: [VanillaJS Datepicker](https://github.com/mymth/vanillajs-datepicker)
 - Building: Make
 - Cloud: Linode/ Akamai
+- Cloud Webserver: [Caddy](https://caddyserver.com/docs/install#debian-ubuntu-raspbian)
 
-## How to Run
+## Server Setup
 
-1. Populate the `.env` file from the `.env.example` file and fill out the fields as approprate.
+This project uses Linode/ Akamai for its server.
+
+1. Log in as root, connecting by the Linode IP address: `ssh root@<IP ADDRESS>`
+2. Update server:
    ```sh
-   cp .env.example .env
+   apt update && apt upgrade -y
    ```
-2. Populate the `database.yml` file fro mthe `database.yml.example` file and fill out the fieleds as appropriate.
+3. Install Caddy:
+   ```sh
+   apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && \
+   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \
+   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list && \
+   apt update && apt install caddy
+   ```
+4. Install supervisor:
+   ```sh
+   apt install supervisor
+   ```
+5. Install PostgreSQL (version 16 is used here. May not be available when reading this):
+   ```sh
+   apt install postgres-##
+   ```
+6. Create new user (accept defaults):
+   ```sh
+   adduser <NAME>
+   ```
+7. Give user root permissions:
+   ```sh
+   usermod -aG sudo <NAME>
+   ```
+8.  Log in as user: `<NAME>@<IP ADDRESS>`
+9. Install Make:
+   ```sh
+   sudo apt install make
+   ```
+10. Download Go: 
+   ```sh
+   wget https://go.dev/dl/go1.23.1.linux-amd64.tar.gz
+   ```
+11. Install Go: 
+    ```sh
+    sudo tar -C /usr/local -xzf go1.23.1.linux-amd64.tar.gz
+    ```
+12. Add Go to PATH:
+    ```sh
+    export PATH=$PATH:/usr/local/go/bin
+    ```
+13. To make sure this Go is always used for this user, update `.profile` with the above `export`
+14. Clone this repo: `git clone https://github.com/BlackSound1/Go-B-and-B.git`
+15. Adjust Postgres configuration located at `/etc/postgresql/##/main/pg_hba.conf`. Adjust IPv4 and IPv6 `METHOD` to 'trust' to keep it simple.
+16. Restart Postgres:
+    ```sh
+    sudo service postgresql stop && sudo service postgresql start
+    ```
+17. Populate the `database.yml` file from the `database.yml.example` file and fill out the fieleds as appropriate.
     ```sh
     cp database.yml.example database.yml
     ```
-3. Run all migrations:
+18. Get Pop: `go install github.com/gobuffalo/pop/v6/soda@latest`
+29. Add Soda to PATH by editing `.profile` to add `export PATH=$PATH:~/go/bin`
+20. Run migrations: `soda migrate`
+21. Populate the `.env` file from the `.env.example` file and fill out the fields as approprate (setting `PROD` to `true`).
    ```sh
-   soda migrate
+   cp .env.example .env
    ```
-4. Run the app.
-   1. If you have Make installed: `make run`
-   2. If you don't: `go run ./cmd/web` or `go run ./...`
+22. Build and run the app: `make build`
+
+## How to Run
+
+If you have Make installed: `make run`.
+
+If you don't: `go run ./cmd/web` or `go run ./...`.
 
 ## How to Log in as Admin
 
