@@ -104,7 +104,15 @@ This project uses Linode/ Akamai for its server.
    ```sh
    cp .env.example .env
    ```
-22. Build and run the app: `make build`
+22. In `/etc/caddy`, there is a `Caddyfile`. Change it to `Caddyfile.dist` with `sudo mv Caddyfile Caddyfile.dist`.
+23. Create own `Caddyfile` and edit it as in `config_examples/Caddyfile.example`.
+24. Create `conf.d/go_b_and_b.conf`. Populate it as in `config_examples/go_b_and_b.conf.example`.
+25. Create `/var/www` directory and move app into `/var/www/go_b_and_b` using `sudo mv ~/Go-B-and-B/ go_b_and_b`.
+26. In `/var/www/go_b_and_b`, create `logs` directory. Make it writable to all by `sudo chmod 777 logs`.
+27. Should now be able to access the site by using the Reverse DNS name for the public IP Address in Linode.
+28. Go to `/etc/supervisor/conf.d`. Create `go_b_and_b.conf`. Populate it as `config_examples/supervisor.conf.d.example`.
+29. Add the program defined above to `supervisor` by using `sudo supervisorctl` and doing `add bnb`.
+
 
 ## How to Run
 

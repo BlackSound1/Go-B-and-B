@@ -1,0 +1,12 @@
+<REVERSE-DNS-NAME-FOR-PUBLIC-IP-ADDRESS> {
+    encode zstd gzip
+
+    import static
+    import security
+
+    log {
+        output file /var/www/go_b_and_b/logs/caddy-access.log
+    }
+
+    reverse_proxy http://localhost:8080
+}

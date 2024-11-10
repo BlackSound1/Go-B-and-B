@@ -1,0 +1,28 @@
+{
+    email <EMAIL>
+}
+
+(static) {
+
+    @static {
+        file
+        path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.json
+    }
+    header @static Cache-Control max-age=5184000
+}
+
+(security) {
+    header {
+        # Enable HSTS
+        Strict-Transport-Security max-age=31536000
+
+        # Disable clients from sniffing media type
+        X-Content-Type-Options nosniff
+
+        # Keep referrer data off of HTTP connections
+        Referrer-Policy no-referrer-when-downgrade
+    }
+}
+
+# Load all config files in conf.d as part of this Caddyfile
+import conf.d/*.conf

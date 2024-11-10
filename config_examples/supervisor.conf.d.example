@@ -1,0 +1,7 @@
+[program:bnb]
+user=<USERNAME>
+command=/var/www/go_b_and_b/Go-B-and-B
+directory=/var/www/go_b_and_b
+autorestart=true
+autostart=true
+stdout_logfile=/var/www/go_b_and_b/logs/supervisord.log
