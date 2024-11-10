@@ -2,3 +2,4 @@ database.yml
 .vscode
 .env
 *.DS_STORE
+info.txt
