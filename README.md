@@ -111,7 +111,8 @@ This project uses Linode/ Akamai for its server.
 26. In `/var/www/go_b_and_b`, create `logs` directory. Make it writable to all by `sudo chmod 777 logs`.
 27. Should now be able to access the site by using the Reverse DNS name for the public IP Address in Linode.
 28. Go to `/etc/supervisor/conf.d`. Create `go_b_and_b.conf`. Populate it as `config_examples/supervisor.conf.d.example`.
-29. Add the program defined above to `supervisor` by using `sudo supervisorctl` and doing `add bnb`.
+29. Add the program defined above to `supervisor` by using `sudo supervisorctl add bnb`.
+30. Run the `update.sh` script to update the deployment when main has been merged to on GitHub.
 
 
 ## How to Run
