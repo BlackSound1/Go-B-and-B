@@ -160,6 +160,11 @@
             <script>
                 let attention = Prompt();
 
+                /**
+                 * Notify the user of something using a Notie alert.
+                 * @param {string} msg The message to be displayed.
+                 * @param {string} msgType The type of message. Can be 'success', 'warning', 'error', 'info', or 'neutral'.
+                 */
                 const notify = (msg, msgType) => {
                     notie.alert({
                         type: msgType,
@@ -167,6 +172,13 @@
                     });
                 };
         
+                /**
+                 * Notify the user of something using a modal window.
+                 * @param {string} title The title of the modal window.
+                 * @param {string} text The text to be displayed in the modal window.
+                 * @param {string} icon The icon to be shown in the modal window. Can be 'success', 'warning', 'error', 'info', or 'neutral'.
+                 * @param {string} confirmationButtonText The text to be shown on the confirmation button.
+                 */
                 const notifyModal = (title, text, icon, confirmationButtonText) => {
                     Swal.fire({
                         title: title,

@@ -9,8 +9,7 @@
 
         <title>Go B & B</title>
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" 
-              integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
         <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
@@ -20,46 +19,54 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="/">Go B & B</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="/about">About</a>
                     </li>
+
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                             Rooms
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="/generals-quarters">General's Quarters</a>
-                            <a class="dropdown-item" href="/majors-suite">Major's Suite</a>
-                        </div>
+
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/generals-quarters">General's Quarters</a></li>
+                            <li><a class="dropdown-item" href="/majors-suite">Major's Suite</a></li>
+                        </ul>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="/search-availability">Book Now</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="/contact">Contact</a>
                     </li>
+
                     <li class="nav-item">
                         <!-- Toggle depending on authentication -->
                         {{ if eq .IsAuthenticated 1 }}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                     Admin
                                 </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href="/admin/dashboard">Dashboard</a>
-                                    <a class="dropdown-item" href="/user/logout">Log Out</a>
-                                </div>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <li><a class="dropdown-item" href="/admin/dashboard">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="/user/logout">Log Out</a></li>
+                                </ul>
                             </li>
                         {{ else }}
                             <a class="nav-link" href="/user/login">Log In</a>
@@ -73,28 +80,28 @@
 
         {{ end }}
 
-        <footer class="row my-footer">
+        <footer class="my-footer">
             <div class="row">
-                <div class="col">
-                    left
+                <div class="col text-center">
+                    <strong>Go B &amp; B</strong> <br><br>
+                    <address>
+                        555 Town Road <br>
+                        Province, Canada <br>
+                        (555) 555-5555 <br>
+                        <a href="mailto:fake@email.com" style="color: white;">fake@email.com</a>
+                    </address>
                 </div>
         
-                <div class="col">
-                    center
-                </div>
+                <div class="col"></div>
         
-                <div class="col">
-                    right
+                <div class="col text-center">
+                    <strong>The best B &amp; B written in Go</strong> <br><br>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit, tempore.
                 </div>
             </div>
         </footer>
         
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-                integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-                crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" 
-                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.2/dist/js/datepicker-full.min.js"></script>
         <script src="https://unpkg.com/notie"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -126,6 +133,11 @@
                 }, false);
             })();
         
+            /**
+             * Notify the user of something using a Notie alert.
+             * @param {string} msg The message to be displayed.
+             * @param {string} msgType The type of message. Can be 'success', 'warning', 'error', 'info', or 'neutral'.
+             */
             const notify = (msg, msgType) => {
                 notie.alert({
                     type: msgType,
@@ -133,6 +145,13 @@
                 });
             };
         
+            /**
+             * Notify the user of something using a modal window.
+             * @param {string} title The title of the modal window.
+             * @param {string} text The text to be displayed in the modal window.
+             * @param {string} icon The icon to be shown in the modal window. Can be 'success', 'warning', 'error', 'info', or 'neutral'.
+             * @param {string} confirmationButtonText The text to be shown on the confirmation button.
+             */
             const notifyModal = (title, text, icon, confirmationButtonText) => {
                 Swal.fire({
                     title: title,
