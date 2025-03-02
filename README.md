@@ -1,6 +1,7 @@
 # Go B & B
 
 A web app for a fictional Bed and Breakfast, written in Go.
+Hosted [here!](https://172-105-109-105.ip.linodeusercontent.com/)
 
 ![Home Page](images/Home%20Page.png)
 
@@ -93,14 +94,14 @@ This project uses Linode/ Akamai for its server.
     ```sh
     sudo service postgresql stop && sudo service postgresql start
     ```
-17. Populate the `database.yml` file from the `database.yml.example` file and fill out the fieleds as appropriate.
+17. Populate the `database.yml` file from the `database.yml.example` file and fill out the fields as appropriate.
     ```sh
     cp database.yml.example database.yml
     ```
 18. Get Pop: `go install github.com/gobuffalo/pop/v6/soda@latest`
 29. Add Soda to PATH by editing `.profile` to add `export PATH=$PATH:~/go/bin`
 20. Run migrations: `soda migrate`
-21. Populate the `.env` file from the `.env.example` file and fill out the fields as approprate (setting `PROD` to `true`).
+21. Populate the `.env` file from the `.env.example` file and fill out the fields as appropriate (setting `PROD` to `true`).
    ```sh
    cp .env.example .env
    ```
